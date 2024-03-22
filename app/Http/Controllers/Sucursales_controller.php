@@ -4,23 +4,28 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\M_sucursal;
 
-class Empresa_controller extends Controller
+class Sucursales_Controller extends Controller
 {
-    public function index(){
-        $datos = DB::table('empresas')->get();
-        return view("welcome")->with("datos", $datos);
+    public function index()
+    {
+        $datos = M_sucursal::all();
+        return view('Sucursales', compact('datos'));
     }
+
     public function create(Request $request){
         try {
-            $sql=DB::insert("insert into empresas(Razon_social)values(?)",[
-                $request->txtempresa
+            $sql=DB::insert("insert into sucursales(Nombre, Direccion, ID_empresa)values(?,?,?)",[
+                $request->txtnombre,
+                $request->txtdireccion,
+                $request->txtidempresa
             ]);        } catch (\Throwable $th) {
                     $sql == 0;        
             }
 
         if ($sql==true) {
-            return back()->with("correcto","Producto registrado correctamente");
+            return back()->with("correcto","Sucursal registrada correctamente");
         } else {
             return back()->with("incorrecto","Error");
         }
@@ -29,8 +34,10 @@ class Empresa_controller extends Controller
 
     public function update(Request $request){
         try {
-            $sql = DB::update(" update empresas set Razon_social=? WHERE ID = ?",[
-                $request -> txtempresa,
+            $sql = DB::update(" update sucursales set Nombre = ?, Direccion, ID_empresa WHERE ID = ?",[
+                $request->txtnombre,
+                $request->txtdireccion,
+                $request->txtidempresa,
                 $request -> txtcodigo
             ]);
             if($sql==0){
@@ -41,7 +48,7 @@ class Empresa_controller extends Controller
             $sql==0;
         }
         if ($sql==true) {
-            return back()->with("correcto","Empresa modificada correctamente");
+            return back()->with("correcto","Modificado correctamente");
         } else {
             return back()->with("incorrecto","Error");
         }
@@ -49,13 +56,13 @@ class Empresa_controller extends Controller
 
     public function delete($id){
         try {
-            $sql=DB::delete("delete from empresas where ID = $id",[
+            $sql=DB::delete("delete from sucursales where ID = $id",[
             ]);        } catch (\Throwable $th) {
                     $sql == 0;        
             }
 
         if ($sql==true) {
-            return back()->with("correcto","Empresa eliminada correctamente");
+            return back()->with("correcto","Sucursal eliminada correctamente");
         } else {
             return back()->with("incorrecto","Error");
         }

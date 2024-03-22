@@ -9,7 +9,7 @@
         <title>Document</title>
     </head>
     <body>
-        <h1 class= "text-center p-3">Crud laravel</h1>
+        <h1 class= "text-center p-3">Sucursales</h1>
         @if(session("correcto"))
         <div class="alert alert-success">{{session("correcto")}}</div>
         @endif
@@ -23,8 +23,8 @@
           }
         </script>
 
-        <!--Modal para crear una empresa -->
-        <div class="modal fade" id="registrarEmpresa" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <!--Modal para crear una sucursal -->
+        <div class="modal fade" id="registrarSucursal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-header">
@@ -32,12 +32,22 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
-                <form action="{{route("empresa.create")}}" method="POST">
+                <form action="{{route("sucursal.create")}}" method="POST">
                   @csrf
 
                   <div class="mb-3">
-                    <label for="exampleInputText1" class="form-label">Razon social</label>
-                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtempresa">
+                    <label for="exampleInputText1" class="form-label">Nombre</label>
+                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtnombre">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="exampleInputText1" class="form-label">Direccion</label>
+                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtdireccion">
+                  </div>
+
+                  <div class="mb-3">
+                    <label for="exampleInputText1" class="form-label">FK_empresa</label>
+                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtidempresa">
                   </div>
         
                   <div class="modal-footer">
@@ -52,12 +62,15 @@
         </div>
 
         <div class="p-5 table-responsive">
-          <btn class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registrarEmpresa">Registrar empresa</btn>
+          <btn class="btn btn-success" data-bs-toggle="modal" data-bs-target="#registrarSucursal">Registrar sucursal</btn>
           <table class="table table-striped table-bordered table-hover">
             <thead>
               <tr>
-                <th scope="col">id</th>
-                <th scope="col">Razon_social</th>
+                <th scope="col">ID</th>
+                <th scope="col">Nombre</th>
+                <th scope="col">Direccion</th>
+                <th scope="col">FK_empresa</th>
+                <th scope="col">Nombre_empresa</th>
                 <th></th>
               </tr>
             </thead>
@@ -65,28 +78,43 @@
               @foreach($datos as $item)
               <tr>
                 <th>{{$item->ID}}</th>
-                <td>{{$item->Razon_social}}</td>
-                <td><a href="" data-bs-toggle="modal" data-bs-target="#editarEmpresa{{$item->ID}}" class="btn btn-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i></a></td>
-                <td><a href="{{route("empresa.delete", $item->ID)}}" onclick="return res()" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a></td>
+                <td>{{$item->Nombre}}</td>
+                <td>{{$item->Direccion}}</td>
+                <td>{{$item->ID_empresa}}</td>
+                <td>{{$item->empresa->Razon_social}}</td>
+
+                <td><a href="" data-bs-toggle="modal" data-bs-target="#editarSucursal{{$item->ID}}" class="btn btn-warning btn-sm"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                <td><a href="{{route("sucursal.delete", $item->ID)}}" onclick="return res()" class="btn btn-danger btn-sm"><i class="fa-solid fa-trash"></i></a></td>
 
 <!-- Modal para modificar datos-->
-<div class="modal fade" id="editarEmpresa{{$item->ID}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<div class="modal fade" id="editarSucursal{{$item->ID}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar datos de la empresa</h1>
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Modificar datos de la sucursal</h1>
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form action="{{route("empresa.update")}}" method="post">
+        <form action="{{route("sucursal.update")}}" method="post">
           @csrf
           <div class="mb-3">
-            <label for="exampleInputText1" class="form-label">Codigo de empresa</label>
+            <label for="exampleInputText1" class="form-label">Codigo de sucursal</label>
             <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtcodigo" value="{{$item->ID}}" readonly>
           </div>
+
           <div class="mb-3">
-            <label for="exampleInputText1" class="form-label">Razon social</label>
-            <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtempresa" value="{{$item->Razon_social}}">
+            <label for="exampleInputText1" class="form-label">Nombre</label>
+            <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtnombre" value="{{$item->Nombre}}">
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputText1" class="form-label">Direccion</label>
+            <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtdireccion" value="{{$item->Direccion}}">
+          </div>
+
+          <div class="mb-3">
+            <label for="exampleInputText1" class="form-label">FK_empresa</label>
+            <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtidempresa" value="{{$item->ID_empresa}}">
           </div>
 
           <div class="modal-footer">
