@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use App\Models\M_empresas;
 
-class M_sucursal extends Model
+class M_sucursales extends Model
 {
     use HasFactory;
     

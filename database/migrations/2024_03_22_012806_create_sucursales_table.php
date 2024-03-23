@@ -16,7 +16,7 @@ class CreateSucursalesTable extends Migration
             $table->string('Nombre');
             $table->string('Direccion');
             //Declaracion de la llave foranea en nuestra migracion
-            $table->unsignedInteger('ID_empresa');
+            $table->unsignedInteger('ID_empresa')->nullable();
             $table->foreign('ID_empresa')->references('ID')->on('empresas');
         });
 

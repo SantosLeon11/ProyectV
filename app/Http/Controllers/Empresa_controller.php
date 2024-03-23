@@ -4,61 +4,55 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\M_empresas;
 
 class Empresa_controller extends Controller
 {
     public function index(){
-        $datos = DB::table('empresas')->get();
+        $datos = M_empresas::all();
         return view("welcome")->with("datos", $datos);
     }
+
     public function create(Request $request){
         try {
-            $sql=DB::insert("insert into empresas(Razon_social)values(?)",[
-                $request->txtempresa
-            ]);        } catch (\Throwable $th) {
-                    $sql == 0;        
-            }
+        // Crear una nueva instancia del modelo Empresa
+        $datos = new M_empresas();
+        $datos->Razon_social = $request->txtempresa;
+        $datos->save();
+    } catch (\Throwable $th) {
 
-        if ($sql==true) {
-            return back()->with("correcto","Producto registrado correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+        return back()->with("incorrecto", "Error al registrar la empresa");
         }
-        
-    }
+
+        return back()->with("correcto", "Empresa registrada correctamente");
+    }   
 
     public function update(Request $request){
         try {
-            $sql = DB::update(" update empresas set Razon_social=? WHERE ID = ?",[
-                $request -> txtempresa,
-                $request -> txtcodigo
-            ]);
-            if($sql==0){
-                $sql==1;
-
-            }
+            $datos = M_empresas::findOrFail($request->txtcodigo); // Encuentra la empresa por su ID
+            $datos->Razon_social = $request->txtempresa; // Actualiza la razón social
+    
+            $datos->save(); // Guarda los cambios en la base de datos
+    
+            return back()->with("correcto", "Empresa modificada correctamente");
         } catch (\Throwable $th) {
-            $sql==0;
-        }
-        if ($sql==true) {
-            return back()->with("correcto","Empresa modificada correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+            return back()->with("incorrecto", "Error al modificar la empresa");
         }
     }
+    
 
-    public function delete($id){
+    public function delete($id)
+    {
         try {
-            $sql=DB::delete("delete from empresas where ID = $id",[
-            ]);        } catch (\Throwable $th) {
-                    $sql == 0;        
+            $datos = M_empresas::find($id);
+            if ($datos) {
+                $datos->delete();
+                return back()->with("correcto", "Empresa eliminada correctamente");
+            } else {
+                return back()->with("incorrecto", "La empresa no existe");
             }
-
-        if ($sql==true) {
-            return back()->with("correcto","Empresa eliminada correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+        } catch (\Throwable $th) {
+            return back()->with("incorrecto", "Error al eliminar empresa");
         }
-        
     }
 }

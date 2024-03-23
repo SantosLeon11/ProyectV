@@ -4,9 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Cliente extends Model
+class M_cliente extends Model
 {
-    protected $table = 'clientes';
+    protected $table = 'cliente';
     protected $primaryKey = 'ID';
     public $timestamps = false;
 

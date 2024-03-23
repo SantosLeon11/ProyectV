@@ -37,7 +37,7 @@
 
                   <div class="mb-3">
                     <label for="exampleInputText1" class="form-label">Nombre</label>
-                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtempresa">
+                    <input type="text" class="form-control" id="exampleInputText1" aria-describedby="textlHelp" name="txtnombre">
                   </div>
         
                   <div class="modal-footer">

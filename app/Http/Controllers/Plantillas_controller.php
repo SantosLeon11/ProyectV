@@ -4,63 +4,56 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\M_plantillas;
 
 class Plantillas_Controller extends Controller
 {
     public function index()
     {
-        $datos = DB::table('plantillas')->get();
+        $datos = M_plantillas::all();
         return view("Plantillas")->with("datos", $datos);
     }
 
     public function create(Request $request){
         try {
-            $sql=DB::insert("insert into plantillas(Razon_social)values(?)",[
-                $request->txtnombre
-            ]);        } catch (\Throwable $th) {
-                    $sql == 0;        
-            }
-
-        if ($sql==true) {
-            return back()->with("correcto","Producto registrado correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+            // Crear una nueva instancia del modelo Plantilla
+            $datos = new M_plantillas();
+            $datos->Nombre = $request->txtnombre;
+            $datos->save();
+        } catch (\Throwable $th) {
+            return back()->with("incorrecto", "Error al registrar la plantilla");
         }
-        
+    
+        return back()->with("correcto", "Plantilla registrada correctamente");
     }
+    
 
     public function update(Request $request){
         try {
-            $sql = DB::update(" update plantillas set Nombre = ? WHERE ID = ?",[
-                $request -> txtnombre,
-                $request -> txtcodigo
-            ]);
-            if($sql==0){
-                $sql==1;
-
-            }
+            $datos = M_plantillas::findOrFail($request->txtcodigo); // Encuentra la plantilla por su ID
+            $datos->Nombre = $request->txtnombre; // Actualiza el nombre
+    
+            $datos->save(); // Guarda los cambios en la base de datos
+    
+            return back()->with("correcto", "Modificado correctamente");
         } catch (\Throwable $th) {
-            $sql==0;
-        }
-        if ($sql==true) {
-            return back()->with("correcto","Modificado correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+            return back()->with("incorrecto", "Error al modificar");
         }
     }
+    
 
-    public function delete($id){
+    public function delete($id)
+    {
         try {
-            $sql=DB::delete("delete from plantillas where ID = $id",[
-            ]);        } catch (\Throwable $th) {
-                    $sql == 0;        
+            $datos = M_plantillas::find($id);
+            if ($datos) {
+                $datos->delete();
+                return back()->with("correcto", "Plantilla eliminada correctamente");
+            } else {
+                return back()->with("incorrecto", "La plantilla no existe");
             }
-
-        if ($sql==true) {
-            return back()->with("correcto","Plantilla eliminada correctamente");
-        } else {
-            return back()->with("incorrecto","Error");
+        } catch (\Throwable $th) {
+            return back()->with("incorrecto", "Error al eliminar plantilla");
         }
-        
     }
 }
